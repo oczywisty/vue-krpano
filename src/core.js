@@ -22,6 +22,9 @@ let config = {
         hooks: {
             type: Object
         },
+        webvr: {
+            type: Number
+        },
         debug: {
             type: Boolean, default: false
         },
@@ -90,6 +93,12 @@ let config = {
                 this.$emit("sceneChanged", scene);
             }
         },
+        enterVr() {
+            let scene = this.scene;
+            if (this.krpanoObj && scene) {
+                console.log(scene, 'enterVr');
+            }
+        },
         log(content){
             if (this.debug) {
                 if (this.krpanoObj) {
@@ -109,6 +118,11 @@ let config = {
         },
         scene: function () {
             this.loadScene();
+        },
+        webvr(value) {
+            if (this.krpanoObj) {
+                this.krpanoObj.call('webvr.toggleVR();');
+            }
         }
     },
     created(){
