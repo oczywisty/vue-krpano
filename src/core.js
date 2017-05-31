@@ -109,8 +109,11 @@ let config = {
         }
     },
     watch: {
-        xml(newXml){
+        xml(oldXml, newXml){
             if (this.krpanoObj && newXml) {
+                if (oldXml) {
+                    newXml = newXml.split("/").pop();
+                }
                 this.krpanoObj.call(`loadpano(${newXml},null,IGNOREKEEP)`);
                 this.$emit("xmlChanged", newXml);
                 this.log("xml changed: " + newXml);

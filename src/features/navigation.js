@@ -28,11 +28,57 @@ let config = {
     this.createNavi();
   },
   methods: {
+    addlabel(name, ath, atv) {
+      this.krpanoObj.call(`
+        addhotspot(${name});
+        set(hotspot[${name}].url, %FIRSTXML%/interface/${name}.png);
+        set(hotspot[${name}].ath, ${ath});
+        set(hotspot[${name}].atv, ${atv});
+        set(hotspot[${name}].scale, .2);
+        set(hotspot[${name}].distorted, true);
+      `);
+    },
+    addSectionHotspots(name, rz, atv, ath, index) {
+      var current = Number(this.route.params.section) == index;
+      this.krpanoObj.call(`
+        addhotspot(${name});
+        set(hotspot[${name}].url, %FIRSTXML%/interface/btn_${name}_${current ? 'on' : 'off'}.png);
+        set(hotspot[${name}].ath, ${ath});
+        set(hotspot[${name}].atv, ${atv});
+        set(hotspot[${name}].rz, ${rz});
+        set(hotspot[${name}].scale, .105);
+        set(hotspot[${name}].distorted, true);
+        set(hotspot[${name}].onclick, jscall(calc('krpano.hooks.gotoSection(${index})')) );
+      `);
+    },
+
+    addHudHotspots(hudOn) {
+      const v = 52;
+      this.krpanoObj.call(`
+        addhotspot(hud_show);
+        set(hotspot[hud_show].url, %FIRSTXML%/interface/show_${hudOn ? 'off' : 'on'}.png);
+        set(hotspot[hud_show].ath, -40);
+        set(hotspot[hud_show].atv, ${v});
+        set(hotspot[hud_show].scale, .25);
+        set(hotspot[hud_show].distorted, true);
+        set(hotspot[hud_show].onclick, jscall(calc('krpano.hooks.toggleHud()')) );
+      `);
+
+      this.krpanoObj.call(`
+        addhotspot(hud_hide);
+        set(hotspot[hud_hide].url, %FIRSTXML%/interface/hide_${!hudOn ? 'off' : 'on'}.png);
+        set(hotspot[hud_hide].ath, -32);
+        set(hotspot[hud_hide].atv, ${v});
+        set(hotspot[hud_hide].scale, .25);
+        set(hotspot[hud_hide].distorted, true);
+        set(hotspot[hud_hide].onclick, jscall(calc('krpano.hooks.toggleHud()')) );
+      `);
+    },
     addViewHotspot(it, active) {
       const spotname = `view_${it+1}`;
       const url = `%FIRSTXML%/interface/${it+1}_${active}.png`;
-      const h = -22 + (it * 6);
-      const v = 40;
+      const h = -18 + (it * 8);
+      const v = 52;
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -47,8 +93,8 @@ let config = {
     addSetupHotspot(it, active) {
       const spotname = `setup_${it+1}`;
       const url = `%FIRSTXML%/interface/setup_${it+1}_${active}.png`;
-      const h = -18 + this.views.length * 6 + (it * 6);
-      const v = 40;
+      const h = -12 + this.views.length * 8 + (it * 8);
+      const v = 52;
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -61,6 +107,26 @@ let config = {
       `);
     },
     createNavi() {
+      if (!this.krpanoObj) {
+        // Fixing the fact that krpano may be not yet initialized on mobile phone app
+        setTimeout(() => { this.createNavi(); }, 2000);
+        return;
+      } else {
+        this.krpanoObj.call('webvr.enterVR();');
+      }
+
+      if (this.views.length == 0) return;
+
+      this.addlabel('text_hud', -36, 55);
+      this.addlabel('text_view', -10, 55);
+      this.addlabel('text_setup', 24, 55);
+
+      this.addSectionHotspots('ee', 17, 62, -20, 0);
+      this.addSectionHotspots('aq', 0, 63.4, 0, 1);
+      this.addSectionHotspots('hs', -17, 62, 20, 2);
+
+      this.addHudHotspots(this.route.path.indexOf('hud') > -1);
+      
       for (let i = 0; i < this.views.length; i++) {
         const routeView = Number(this.route.params.view) || 0;
         const active = (routeView === i) ? 'off' : 'on';
