@@ -117,15 +117,8 @@ let config = {
 
       if (this.views.length == 0) return;
 
-      this.addlabel('text_hud', -36, 55);
       this.addlabel('text_view', -10, 55);
-      this.addlabel('text_setup', 24, 55);
-
-      this.addSectionHotspots('ee', 17, 62, -20, 0);
-      this.addSectionHotspots('aq', 0, 63.4, 0, 1);
-      this.addSectionHotspots('hs', -17, 62, 20, 2);
-
-      this.addHudHotspots(this.route.path.indexOf('hud') > -1);
+      this.addlabel('text_setup', 16, 55);
       
       for (let i = 0; i < this.views.length; i++) {
         const routeView = Number(this.route.params.view) || 0;
@@ -143,6 +136,9 @@ let config = {
   watch: {
     route(){
       this.createNavi();
+    },
+    hotspots(hs){
+      if (hs.length) this.createNavi();
     }
   },
 };

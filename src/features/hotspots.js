@@ -16,9 +16,9 @@ let config = {
     this.createHotspots();
   },
   methods: {
-    addHotspot(it, {v, h, scale}) {
+    addHotspot(it, {v, h, scale, name}) {
       const spotname = `hotspot${it}`;
-      const url = './static/vr/hotspot.png';
+      const url = './static/panoramas/interface/hotspot.png';
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -26,7 +26,7 @@ let config = {
         set(hotspot[${spotname}].ath, ${h});
         set(hotspot[${spotname}].atv, ${v});
         set(hotspot[${spotname}].scale, ${scale});
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.onHotspotClick("${spotname}")')));
+        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${name}")')));
       `);
     },
     createHotspots() {
