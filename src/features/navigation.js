@@ -28,6 +28,29 @@ let config = {
     this.createNavi();
   },
   methods: {
+    createHotspot(name, ath, atv, image, ico, scale, hook, enabled) {
+      this.krpanoObj.call(`
+        addhotspot(${name});
+        set(hotspot[${name}].url, %FIRSTXML%/interface/${image}.png);
+        set(hotspot[${name}].ath, ${ath});
+        set(hotspot[${name}].atv, ${atv});
+        set(hotspot[${name}].scale, ${scale});
+        set(hotspot[${name}].distorted, true);
+        set(hotspot[${name}].enabled, ${enabled});
+        set(hotspot[${name}].onclick, jscall(calc('krpano.hooks.${hook}')));
+      `);
+
+      this.krpanoObj.call(`
+        addhotspot(${name}_ico);
+        set(hotspot[${name}_ico].url, %FIRSTXML%/interface/${ico}.png);
+        set(hotspot[${name}_ico].ath, ${ath});
+        set(hotspot[${name}_ico].atv, ${atv});
+        set(hotspot[${name}_ico].scale, ${scale});
+        set(hotspot[${name}_ico].distorted, true);
+        set(hotspot[${name}_ico].enabled, false);
+      `);
+
+    },
     addlabel(name, ath, atv) {
       this.krpanoObj.call(`
         addhotspot(${name});
@@ -36,6 +59,7 @@ let config = {
         set(hotspot[${name}].atv, ${atv});
         set(hotspot[${name}].scale, .2);
         set(hotspot[${name}].distorted, true);
+        set(hotspot[${name}].enabled, false);
       `);
     },
     addSectionHotspots(name, rz, atv, ath, index) {
@@ -53,58 +77,29 @@ let config = {
     },
 
     addHudHotspots(hudOn) {
-      const v = 52;
-      this.krpanoObj.call(`
-        addhotspot(hud_show);
-        set(hotspot[hud_show].url, %FIRSTXML%/interface/show_${hudOn ? 'off' : 'on'}.png);
-        set(hotspot[hud_show].ath, -40);
-        set(hotspot[hud_show].atv, ${v});
-        set(hotspot[hud_show].scale, .25);
-        set(hotspot[hud_show].distorted, true);
-        set(hotspot[hud_show].onclick, jscall(calc('krpano.hooks.toggleHud()')) );
-      `);
+      let image = hudOn ? 'btn' : 'btn_active';
+      this.createHotspot('hud_show', -40, 52, image, 'show', .25, 'toggleHud()', !hudOn);
 
-      this.krpanoObj.call(`
-        addhotspot(hud_hide);
-        set(hotspot[hud_hide].url, %FIRSTXML%/interface/hide_${!hudOn ? 'off' : 'on'}.png);
-        set(hotspot[hud_hide].ath, -32);
-        set(hotspot[hud_hide].atv, ${v});
-        set(hotspot[hud_hide].scale, .25);
-        set(hotspot[hud_hide].distorted, true);
-        set(hotspot[hud_hide].onclick, jscall(calc('krpano.hooks.toggleHud()')) );
-      `);
+      image = !hudOn ? 'btn' : 'btn_active';
+      this.createHotspot('hud_hide', -32, 52, image, 'hide', .25, 'toggleHud()', hudOn);
+      
     },
     addViewHotspot(it, active) {
+      console.log(active);
       const spotname = `view_${it+1}`;
-      const url = `%FIRSTXML%/interface/${it+1}_${active}.png`;
+      const image = active ? 'btn' : 'btn_active';
       const h = -18 + (it * 8);
       const v = 52;
 
-      this.krpanoObj.call(`
-        addhotspot(${spotname});
-        set(hotspot[${spotname}].url, ${url});
-        set(hotspot[${spotname}].ath, ${h});
-        set(hotspot[${spotname}].atv, ${v});
-        set(hotspot[${spotname}].scale, .25);
-        set(hotspot[${spotname}].distorted, true);
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.gotoView(${it})')) );
-      `);
+      this.createHotspot(spotname, h, v, image, it+1, .25, `gotoView(${it})`, !active);
     },
-    addSetupHotspot(it, active) {
+    addSetupHotspot(it, energyLevel, active) {
       const spotname = `setup_${it+1}`;
-      const url = `%FIRSTXML%/interface/setup_${it+1}_${active}.png`;
+      const image = active ? `level_${energyLevel}` : `level_${energyLevel}_active`;
       const h = -12 + this.views.length * 8 + (it * 8);
       const v = 52;
 
-      this.krpanoObj.call(`
-        addhotspot(${spotname});
-        set(hotspot[${spotname}].url, ${url});
-        set(hotspot[${spotname}].ath, ${h});
-        set(hotspot[${spotname}].atv, ${v});
-        set(hotspot[${spotname}].scale, .25);
-        set(hotspot[${spotname}].distorted, true);
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.gotoSetup(${it})')) );
-      `);
+      this.createHotspot(spotname, h, v, image, it+1, .25, `gotoSetup(${it})`, !active);
     },
     createNavi() {
       if (!this.krpanoObj) {
@@ -119,7 +114,9 @@ let config = {
 
       this.addlabel('text_hud', -36, 55);
       this.addlabel('text_view', -10, 55);
-      this.addlabel('text_setup', 24, 55);
+
+      const setupLabelH = this.setups.length === 4 ? 24 : 20;
+      this.addlabel('text_setup', setupLabelH, 55);
 
       this.addSectionHotspots('ee', 17, 62, -20, 0);
       this.addSectionHotspots('aq', 0, 63.4, 0, 1);
@@ -129,14 +126,12 @@ let config = {
       
       for (let i = 0; i < this.views.length; i++) {
         const routeView = Number(this.route.params.view) || 0;
-        const active = (routeView === i) ? 'off' : 'on';
-        this.addViewHotspot(i, active);
+        this.addViewHotspot(i, routeView === i);
       }
 
       for (let i = 0; i < this.setups.length; i++) {
         const routeSetup = Number(this.route.params.setup) || 0;
-        const active = (routeSetup === i) ? 'off' : 'on';
-        this.addSetupHotspot(i, active);
+        this.addSetupHotspot(i, this.setups[i].energy_level, routeSetup === i);
       }
     }
   },
