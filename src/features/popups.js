@@ -5,7 +5,7 @@
 
 let config = {
   props: {
-    hotspots: {
+    popups: {
       type: Array,
       default: function () {
         return [];
@@ -13,12 +13,12 @@ let config = {
     }
   },
   mounted(){
-    this.createHotspots();
+    this.createPopups();
   },
   methods: {
-    addHotspot(it, {v, h, scale, view}) {
-      const spotname = `hotspot${it}`;
-      const url = './static/panoramas/interface/hotspot.png';
+    addPopup(it, {v, h, scale, title, content, video}) {
+      const spotname = `popup${it}`;
+      const url = './static/panoramas/interface/popup.png';
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -26,18 +26,18 @@ let config = {
         set(hotspot[${spotname}].ath, ${h});
         set(hotspot[${spotname}].atv, ${v});
         set(hotspot[${spotname}].scale, ${scale});
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.gotoView(${view})')) );
+        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${video}","${title}","${content}")')));
       `);
     },
-    createHotspots() {
-      for (let i = 0; i < this.hotspots.length; i++) {
-        this.addHotspot(i, this.hotspots[i]);
+    createPopups() {
+      for (let i = 0; i < this.popups.length; i++) {
+        this.addPopup(i, this.popups[i]);
       }
     }
   },
   watch: {
-    hotspots(){
-      this.createHotspots();
+    popups(){
+      this.createPopups();
     }
   },
 };
