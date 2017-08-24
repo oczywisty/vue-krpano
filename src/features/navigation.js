@@ -77,8 +77,8 @@ let config = {
     addViewHotspot(it, active) {
       const spotname = `view_${it+1}`;
       const url = `%FIRSTXML%/interface/${it+1}_${active}.png`;
-      const h = -18 + (it * 8);
-      const v = 52;
+      const h = -18 + (it * 12);
+      const v = 67;
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -93,8 +93,8 @@ let config = {
     addSetupHotspot(it, active) {
       const spotname = `setup_${it+1}`;
       const url = `%FIRSTXML%/interface/setup_${it+1}_${active}.png`;
-      const h = -12 + this.views.length * 8 + (it * 8);
-      const v = 52;
+      const h = -12 + this.views.length * 12 + (it * 12);
+      const v = 67;
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -117,8 +117,8 @@ let config = {
 
       if (this.views.length == 0) return;
 
-      this.addlabel('text_view', -10, 55);
-      this.addlabel('text_setup', 16, 55);
+      this.addlabel('text_view', -6, 70);
+      this.addlabel('text_setup', 30, 70);
       
       for (let i = 0; i < this.views.length; i++) {
         const routeView = Number(this.route.params.view) || 0;
