@@ -30,8 +30,13 @@ let config = {
       `);
     },
     createPopups() {
-      for (let i = 0; i < this.popups.length; i++) {
-        this.addPopup(i, this.popups[i]);
+      if (!this.krpanoObj) {
+        setTimeout(() => { this.createPopups(); }, 2000);
+        return;
+      } else {
+        for (let i = 0; i < this.popups.length; i++) {
+          this.addPopup(i, this.popups[i]);
+        }
       }
     }
   },

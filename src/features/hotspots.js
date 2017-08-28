@@ -30,8 +30,13 @@ let config = {
       `);
     },
     createHotspots() {
-      for (let i = 0; i < this.hotspots.length; i++) {
-        this.addHotspot(i, this.hotspots[i]);
+      if (!this.krpanoObj) {
+        setTimeout(() => { this.createHotspots(); }, 2000);
+        return;
+      } else {
+        for (let i = 0; i < this.hotspots.length; i++) {
+          this.addHotspot(i, this.hotspots[i]);
+        }
       }
     }
   },
