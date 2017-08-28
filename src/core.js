@@ -22,6 +22,10 @@ let config = {
         hooks: {
             type: Object
         },
+        hlookat: {
+            type: Number,
+            default: 0
+        },
         webvr: {
             type: Number
         },
@@ -88,6 +92,7 @@ let config = {
                         loadscene(get(scene[0].name),null,MERGE,BLEND(0.5)),
                         loadscene(${scene},null,MERGE,BLEND(0.5)))`;
                 this.krpanoObj.call(str);
+                setTimeout(() => { this.krpanoObj.set("view.hlookat", this.hlookat); }, 50);
 
                 this.log("scene changed: " + scene);
                 this.$emit("sceneChanged", scene);
