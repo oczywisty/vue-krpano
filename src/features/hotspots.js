@@ -18,14 +18,16 @@ let config = {
   methods: {
     addHotspot(it, {v, h, scale, view}) {
       const spotname = `hotspot${it}`;
-      const url = './static/panoramas/interface/hotspot.png';
+      const url = './static/panoramas/interface/pin.png';
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
         set(hotspot[${spotname}].url, ${url});
         set(hotspot[${spotname}].ath, ${h});
         set(hotspot[${spotname}].atv, ${v});
-        set(hotspot[${spotname}].scale, ${scale});
+        set(hotspot[${spotname}].distorted, true);
+        set(hotspot[${spotname}].scale, .25);
+        set(hotspot[${spotname}].onloaded, do_crop_animation(251,410, 25));
         set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.gotoView(${view})')) );
       `);
     },

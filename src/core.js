@@ -22,6 +22,9 @@ let config = {
         hooks: {
             type: Object
         },
+        lookat: {
+            type: Boolean
+        },
         hlookat: {
             type: Number,
             default: 0
@@ -92,7 +95,13 @@ let config = {
                         loadscene(get(scene[0].name),null,MERGE,BLEND(0.5)),
                         loadscene(${scene},null,MERGE,BLEND(0.5)))`;
                 this.krpanoObj.call(str);
-                setTimeout(() => { this.krpanoObj.set("view.hlookat", this.hlookat); }, 50);
+
+                if (this.lookat) {
+                    setTimeout(() => { 
+                        this.krpanoObj.set("view.hlookat", this.hlookat); 
+                        this.krpanoObj.set("view.vlookat", 0); 
+                    }, 50);
+                }
 
                 this.log("scene changed: " + scene);
                 this.$emit("sceneChanged", scene);

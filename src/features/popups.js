@@ -18,7 +18,7 @@ let config = {
   methods: {
     addPopup(it, {v, h, scale, title, content, video}) {
       const spotname = `popup${it}`;
-      const url = './static/panoramas/interface/popup.png';
+      const url = './static/panoramas/interface/hotspot_sprite.png';
 
       this.krpanoObj.call(`
         addhotspot(${spotname});
@@ -26,6 +26,7 @@ let config = {
         set(hotspot[${spotname}].ath, ${h});
         set(hotspot[${spotname}].atv, ${v});
         set(hotspot[${spotname}].scale, ${scale});
+        set(hotspot[${spotname}].onloaded, do_crop_animation(250,250, 25));
         set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${video}","${title}","${content}")')));
       `);
     },
