@@ -29,6 +29,10 @@ let config = {
             type: Number,
             default: 0
         },
+        vlookat: {
+            type: Number,
+            default: 0
+        },
         webvr: {
             type: Number
         },
@@ -98,8 +102,9 @@ let config = {
 
                 if (this.lookat) {
                     setTimeout(() => { 
+                        console.log(this.vlookat);
                         this.krpanoObj.set("view.hlookat", this.hlookat); 
-                        this.krpanoObj.set("view.vlookat", 0); 
+                        this.krpanoObj.set("view.vlookat", this.vlookat); 
                     }, 50);
                 }
 
