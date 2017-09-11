@@ -45,6 +45,7 @@ let config = {
         set(hotspot[${this.hotspotName}].videourl, ${videoUrl});
         set(hotspot[${this.hotspotName}].ath, ${h});
         set(hotspot[${this.hotspotName}].atv, ${v});
+        set(hotspot[${this.hotspotName}].enabled, false);
         set(hotspot[${this.hotspotName}].alpha, 1);
         set(hotspot[${this.hotspotName}].distorted, true);
         set(hotspot[${this.hotspotName}].scale, 0.2);
@@ -56,6 +57,7 @@ let config = {
           set(hotspot[${this.hotspotName}_img].url, ${imageUrl});
           set(hotspot[${this.hotspotName}_img].ath, ${h});
           set(hotspot[${this.hotspotName}_img].atv, ${v});
+          set(hotspot[${this.hotspotName}_img].enabled, false);
           set(hotspot[${this.hotspotName}_img].distorted, true);
           set(hotspot[${this.hotspotName}_img].scale, 0.2);
         `);
@@ -64,9 +66,9 @@ let config = {
           addhotspot(${this.hotspotName}_close);
           set(hotspot[${this.hotspotName}_close].url, ${closeUrl});
           set(hotspot[${this.hotspotName}_close].ath, ${h + 28});
-          set(hotspot[${this.hotspotName}_close].atv, ${v - 18});
+          set(hotspot[${this.hotspotName}_close].atv, ${v - 16});
           set(hotspot[${this.hotspotName}_close].distorted, true);
-          set(hotspot[${this.hotspotName}_close].scale, 0.25);
+          set(hotspot[${this.hotspotName}_close].scale, 0.5);
           set(hotspot[${this.hotspotName}_close].onclick, jscall(calc('krpano.hooks.openPopup()')));
         `);
       }, 1000);
@@ -77,6 +79,7 @@ let config = {
         setTimeout(() => { this.createVideo(); }, 2000);
         return;
       } else {
+        this.krpanoObj.call('webvr.enterVR();');
         this.addVideo(this.video);
       }
     }

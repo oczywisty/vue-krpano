@@ -10,6 +10,12 @@ let config = {
       default: function () {
         return [];
       }
+    },
+    video: {
+      type: Object,
+      default: function () {
+        return {};
+      }
     }
   },
   mounted(){
@@ -39,11 +45,37 @@ let config = {
           this.addPopup(i, this.popups[i]);
         }
       }
+    },
+    disablePopups() {
+      if (!this.krpanoObj) {
+        return;
+      }
+      
+      for (let i = 0; i < this.popups.length; i++) {
+        this.krpanoObj.call(`set(hotspot[popup${i}].enabled, false);`);
+      }
+    },
+    enablePopups() {
+      if (!this.krpanoObj) {
+        return;
+      }
+      
+      
+      for (let i = 0; i < this.popups.length; i++) {
+        this.krpanoObj.call(`set(hotspot[popup${i}].enabled, true);`);
+      }
     }
   },
   watch: {
     popups(){
       this.createPopups();
+    },
+    video(){
+      if (this.video.video) {
+        this.disablePopups();
+      } else {
+        this.enablePopups();
+      }
     }
   },
 };

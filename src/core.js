@@ -102,8 +102,9 @@ let config = {
 
                 if (this.lookat) {
                     setTimeout(() => { 
-                        console.log(this.vlookat);
-                        this.krpanoObj.set("view.hlookat", this.hlookat); 
+                        
+                        this.krpanoObj.call(`lookat(${this.hlookat});`);
+                        // this.krpanoObj.set("view.hlookat", this.hlookat); 
                         this.krpanoObj.set("view.vlookat", this.vlookat); 
                     }, 50);
                 }
@@ -133,7 +134,7 @@ let config = {
                 if (oldXml) {
                     newXml = newXml.split("/").pop();
                 }
-                this.krpanoObj.call(`loadpano(${newXml},null,IGNOREKEEP)`);
+                this.krpanoObj.call(`loadpano(${newXml},null,IGNOREKEEP|KEEPMOVING)`);
                 this.$emit("xmlChanged", newXml);
                 this.log("xml changed: " + newXml);
             }

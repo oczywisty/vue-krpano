@@ -9,10 +9,11 @@ import freezeVertical from "./features/freezeVertical";
 import hotspots from "./features/hotspots";
 import popups from "./features/popups";
 import videos from "./features/videos";
+import canopy from "./features/canopy";
 
 let config = {
 
-    mixins: [core, lazyLoad, freezeVertical, hotspots, popups, videos],
+    mixins: [core, lazyLoad, freezeVertical, hotspots, popups, videos, canopy],
 
     template: "<div class='vue-krpano'></div>",
 
