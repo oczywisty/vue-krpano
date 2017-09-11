@@ -33,7 +33,7 @@ let config = {
         set(hotspot[${spotname}].atv, ${v});
         set(hotspot[${spotname}].scale, ${scale});
         set(hotspot[${spotname}].onloaded, do_crop_animation(250,250, 25));
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${video}", ${loop}, ${v}, ${h})')));
+        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${video}", "${title}", "${content}")')));
       `);
     },
     createPopups() {
