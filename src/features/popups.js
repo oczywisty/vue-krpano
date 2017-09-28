@@ -11,6 +11,12 @@ let config = {
         return [];
       }
     },
+    popupsVisible: {
+      type: Boolean,
+      default: function () {
+        return true;
+      }
+    },
     video: {
       type: Object,
       default: function () {
@@ -32,8 +38,9 @@ let config = {
         set(hotspot[${spotname}].ath, ${h});
         set(hotspot[${spotname}].atv, ${v});
         set(hotspot[${spotname}].scale, ${scale});
+        set(hotspot[${spotname}].visible, ${this.popupsVisible});
         set(hotspot[${spotname}].onloaded, do_crop_animation(250,250, 25));
-        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${video}", "${title}", "${content}")')));
+        set(hotspot[${spotname}].onclick, jscall(calc('krpano.hooks.openPopup("${it}")')));
       `);
     },
     createPopups() {
@@ -46,35 +53,25 @@ let config = {
         }
       }
     },
-    disablePopups() {
-      if (!this.krpanoObj) {
-        return;
-      }
-      
-      for (let i = 0; i < this.popups.length; i++) {
-        this.krpanoObj.call(`set(hotspot[popup${i}].enabled, false);`);
-      }
-    },
-    enablePopups() {
-      if (!this.krpanoObj) {
-        return;
-      }
-      
-      
-      for (let i = 0; i < this.popups.length; i++) {
-        this.krpanoObj.call(`set(hotspot[popup${i}].enabled, true);`);
-      }
-    }
   },
   watch: {
     popups(){
       this.createPopups();
     },
     video(){
-      if (this.video.video) {
-        this.disablePopups();
-      } else {
-        this.enablePopups();
+      if (!this.krpanoObj) { return; }
+
+      var isVideo = this.video.video ? false : true;
+      
+      for (let i = 0; i < this.popups.length; i++) {
+        this.krpanoObj.call(`set(hotspot[popup${i}].enabled, ${isVideo});`);
+      }
+    },
+    popupsVisible(){
+      if (!this.krpanoObj) { return; }
+      
+      for (let i = 0; i < this.popups.length; i++) {
+        this.krpanoObj.call(`set(hotspot[popup${i}].visible, ${this.popupsVisible});`);
       }
     }
   },
